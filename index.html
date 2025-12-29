@@ -14,19 +14,17 @@
         
         /* SZACHOWNICA */
         .chessboard {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 0;
-            width: 85vw;
-            height: 85vw;
-            max-width: 480px;
-            max-height: 480px;
-            margin: 0 auto;
-            border: 3px solid #333;
-            background: #999;
-            box-sizing: border-box;
-            padding: 0;
-        }
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0;
+    width: min(80vw, 480px); /* 480px jest bezpieczniejsze na mniejszych laptopach */
+    height: min(80vw, 480px);
+    margin: 0 auto;
+    border: 3px solid #333;
+    background: #999;
+    box-sizing: border-box;
+    padding: 0;
+}
         
         .square {
             aspect-ratio: 1;
