@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liga Szachowa Szwagrów</title>
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f3f4f6; font-family: sans-serif; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .btn-nav.active { border-bottom: 2px solid #0d9488; color: #0d9488; font-weight: bold; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen pb-10">
+
+    <!-- LOGIN -->
+    <div id="login-screen" class="flex items-center justify-center min-h-screen">
+        <div class="bg-white p-8 rounded-lg shadow-lg w-96">
+            <h1 class="text-2xl font-bold mb-6 text-center text-teal-700">♟️ Szach-Mat Szwagry</h1>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Wybierz zawodnika</label>
+                    <select id="login-user" class="mt-1 block w-full p-2 border rounded">
+                        <option value="Maciek">Maciek</option>
+                        <option value="Rafał">Rafał</option>
+                        <option value="Marcin">Marcin</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">PIN</label>
+                    <input type="password" id="login-pin" class="mt-1 block w-full p-2 border rounded" placeholder="1111, 2222 lub 3333">
+                </div>
+                <button onclick="app.login()" class="w-full bg-teal-600 text-white p-2 rounded hover:bg-teal-700 transition">Zaloguj</button>
+                <p id="login-error" class="text-red-500 text-sm text-center hidden">Błędny PIN!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- GŁÓWNA APLIKACJA -->
+    <div id="app-screen" class="hidden max-w-4xl mx-auto p-4">
+        <!-- HEADER -->
+        <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow mb-6">
+            <h2 class="text-xl font-bold text-gray-800">Liga Szachowa</h2>
+            <div class="flex items-center gap-4">
+                <span class="text-gray-600 text-sm md:text-base">Gracz: <span id="current-player-name" class="font-bold text-teal-600"></span></span>
+                <button onclick="app.logout()" class="text-xs border px-2 py-1 rounded hover:bg-gray-50">Wyloguj</button>
+            </div>
+        </div>
+
+        <!-- NAWIGACJA -->
+        <div class="bg-white rounded-lg shadow mb-6 overflow-hidden">
+            <div class="flex border-b">
+                <button onclick="app.showTab('ranking')" class="btn-nav flex-1 p-3 text-sm md:text-base hover:bg-gray-50 active" id="nav-ranking">Ranking</button>
+                <button onclick="app.showTab('new-match')" class="btn-nav flex-1 p-3 text-sm md:text-base hover:bg-gray-50" id="nav-new-match">Graj</button>
+                <button onclick="app.showTab('history')" class="btn-nav flex-1 p-3 text-sm md:text-base hover:bg-gray-50" id="nav-history">Historia</button>
+            </div>
+
+            <!-- TAB: RANKING -->
+            <div id="tab-ranking" class="tab-content active p-4 md:p-6">
+                <div class="text-center mb-6">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Mistrz Sezonu</h3>
+                    <div id="champion-display" class="text-2xl font-bold text-yellow-600 mt-1">-</div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-2 text-left">Gracz</th>
+                                <th class="px-4 py-2 text-center">Mecze</th>
+                                <th class="px-4 py-2 text-center text-green-600">W</th>
+                                <th class="px-4 py-2 text-center text-gray-500">R</th>
+                                <th class="px-4 py-2 text-center text-red-500">P</th>
+                                <th class="px-4 py-2 text-center font-bold">PKT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ranking-body" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: GRA -->
+            <div id="tab-new-match" class="tab-content p-4 md:p-6">
+                <!-- Setup -->
+                <div id="game-setup">
+                    <h3 class="text-lg font-bold mb-4">Nowy Mecz</h3>
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Białe</label>
+                            <select id="white-player" class="mt-1 block w-full p-2 border rounded">
+                                <option value="Maciek">Maciek</option>
+                                <option value="Rafał">Rafał</option>
+                                <option value="Marcin">Marcin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Czarne</label>
+                            <select id="black-player" class="mt-1 block w-full p-2 border rounded">
+                                <option value="Rafał">Rafał</option>
+                                <option value="Maciek">Maciek</option>
+                                <option value="Marcin">Marcin</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="game.start()" class="w-full bg-teal-600 text-white p-3 rounded font-bold hover:bg-teal-700 shadow-lg transform transition active:scale-95">START</button>
+                </div>
+
+                <!-- Plansza -->
+                <div id="game-active" class="hidden">
+                    <div class="flex justify-between items-center mb-2 text-sm">
+                        <span class="font-bold text-gray-700" id="game-white-name"></span>
+                        <span id="game-status" class="text-xs font-bold text-red-500"></span>
+                        <span class="font-bold text-gray-700" id="game-black-name"></span>
+                    </div>
+                    
+                    <div id="myBoard" class="mb-4"></div>
+
+                    <!-- Przyciski sterowania grą -->
+                    <div class="flex gap-2 mb-4">
+                         <button onclick="game.undo()" class="flex-1 bg-gray-200 text-gray-700 py-2 rounded text-sm font-medium hover:bg-gray-300">Cofnij ruch</button>
+                         <button onclick="game.cancel()" class="flex-1 border border-red-200 text-red-600 py-2 rounded text-sm font-medium hover:bg-red-50">Anuluj grę</button>
+                    </div>
+
+                    <!-- Przyciski wyniku -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="game.endGame('white')" class="bg-green-600 text-white py-3 rounded text-sm font-bold shadow hover:bg-green-700">Białe Wygrywają</button>
+                        <button onclick="game.endGame('draw')" class="bg-gray-500 text-white py-3 rounded text-sm font-bold shadow hover:bg-gray-600">Remis</button>
+                        <button onclick="game.endGame('black')" class="bg-gray-800 text-white py-3 rounded text-sm font-bold shadow hover:bg-gray-900">Czarne Wygrywają</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: HISTORIA -->
+            <div id="tab-history" class="tab-content p-4 md:p-6">
+                <h3 class="text-lg font-bold mb-4">Ostatnie mecze</h3>
+                <ul id="match-history-list" class="space-y-2"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- BAZA DANYCH ---
+        const DB = {
+            players: [
+                { name: 'Maciek', pin: '1111' },
+                { name: 'Rafał', pin: '2222' },
+                { name: 'Marcin', pin: '3333' }
+            ],
+            getData: () => JSON.parse(localStorage.getItem('chessAppData')) || { matches: [], season: 1 },
+            saveData: (data) => localStorage.setItem('chessAppData', JSON.stringify(data)),
+            
+            addMatch: (white, black, result) => {
+                const data = DB.getData();
+                data.matches.push({
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    white, black, result,
+                    season: data.season
+                });
+                DB.saveData(data);
+                app.render();
+            },
+            
+            getStats: () => {
+                const data = DB.getData();
+                let stats = {};
+                DB.players.forEach(p => stats[p.name] = { w:0, d:0, l:0, pts:0, games:0 });
+                data.matches.forEach(m => {
+                    if(m.season !== data.season) return;
+                    if(m.result === '1-0') { stats[m.white].w++; stats[m.white].pts+=1; stats[m.black].l++; }
+                    else if(m.result === '0-1') { stats[m.black].w++; stats[m.black].pts+=1; stats[m.white].l++; }
+                    else { stats[m.white].d++; stats[m.white].pts+=0.5; stats[m.black].d++; stats[m.black].pts+=0.5; }
+                    stats[m.white].games++; stats[m.black].games++;
+                });
+                return Object.entries(stats).map(([n,s]) => ({name:n, ...s})).sort((a,b) => b.pts - a.pts);
+            }
+        };
+
+        // --- INTERFEJS ---
+        const app = {
+            currentUser: null,
+            init: () => {
+                if(localStorage.getItem('chessUser')) {
+                    app.currentUser = localStorage.getItem('chessUser');
+                    app.showApp();
+                }
+            },
+            login: () => {
+                const u = document.getElementById('login-user').value;
+                const p = document.getElementById('login-pin').value;
+                if(DB.players.find(x => x.name === u && x.pin === p)) {
+                    app.currentUser = u;
+                    localStorage.setItem('chessUser', u);
+                    app.showApp();
+                } else document.getElementById('login-error').classList.remove('hidden');
+            },
+            logout: () => { localStorage.removeItem('chessUser'); location.reload(); },
+            showApp: () => {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                document.getElementById('current-player-name').innerText = app.currentUser;
+                app.render();
+            },
+            showTab: (id) => {
+                document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+                document.querySelectorAll('.btn-nav').forEach(e => e.classList.remove('active'));
+                document.getElementById('tab-'+id).classList.add('active');
+                document.getElementById('nav-'+id).classList.add('active');
+            },
+            render: () => {
+                const stats = DB.getStats();
+                const tbody = document.getElementById('ranking-body');
+                tbody.innerHTML = '';
+                document.getElementById('champion-display').innerText = (stats.length && stats[0].games > 0) 
+                    ? `${stats[0].name} (${stats[0].pts} pkt)` : 'Brak meczów';
+
+                stats.forEach(s => {
+                    tbody.innerHTML += `<tr>
+                        <td class="px-4 py-2 font-medium">${s.name}</td>
+                        <td class="px-4 py-2 text-center text-gray-600">${s.games}</td>
+                        <td class="px-4 py-2 text-center text-green-600">${s.w}</td>
+                        <td class="px-4 py-2 text-center text-gray-500">${s.d}</td>
+                        <td class="px-4 py-2 text-center text-red-500">${s.l}</td>
+                        <td class="px-4 py-2 text-center font-bold text-gray-800">${s.pts}</td>
+                    </tr>`;
+                });
+
+                const hist = document.getElementById('match-history-list');
+                hist.innerHTML = '';
+                DB.getData().matches.reverse().forEach(m => {
+                    const res = m.result==='1-0' ? '1:0' : (m.result==='0-1' ? '0:1' : '½:½');
+                    hist.innerHTML += `<li class="bg-white border rounded p-3 flex justify-between items-center text-sm shadow-sm">
+                        <div><span class="font-bold">${m.white}</span> vs <span class="font-bold">${m.black}</span></div>
+                        <div class="font-bold text-teal-700 bg-teal-50 px-2 py-1 rounded">${res}</div>
+                    </li>`;
+                });
+            }
+        };
+
+        // --- GRA ---
+        const game = {
+            chess: null,
+            board: null,
+            wPlayer: null,
+            bPlayer: null,
+
+            start: () => {
+                const w = document.getElementById('white-player').value;
+                const b = document.getElementById('black-player').value;
+                if(w === b) return alert('Wybierz dwóch różnych graczy!');
+                
+                game.wPlayer = w;
+                game.bPlayer = b;
+                
+                document.getElementById('game-setup').classList.add('hidden');
+                document.getElementById('game-active').classList.remove('hidden');
+                document.getElementById('game-white-name').innerText = '⚪ ' + w;
+                document.getElementById('game-black-name').innerText = '⚫ ' + b;
+
+                game.chess = new Chess();
+                game.board = Chessboard('myBoard', {
+                    draggable: true,
+                    position: 'start',
+                    onDragStart: (source, piece) => {
+                        if (game.chess.game_over()) return false;
+                        if ((game.chess.turn() === 'w' && piece.search(/^b/) !== -1) ||
+                            (game.chess.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
+                    },
+                    onDrop: (source, target) => {
+                        const move = game.chess.move({ from: source, to: target, promotion: 'q' });
+                        if (move === null) return 'snapback';
+                        game.updateStatus();
+                    },
+                    onSnapEnd: () => game.board.position(game.chess.fen())
+                });
+                // Fix for responsive board
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
+            },
+
+            cancel: () => {
+                if(confirm('Na pewno anulować grę? Wynik nie zostanie zapisany.')) {
+                    game.resetUI();
+                }
+            },
+            
+            undo: () => {
+                game.chess.undo();
+                game.board.position(game.chess.fen());
+                game.updateStatus();
+            },
+
+            resetUI: () => {
+                document.getElementById('game-active').classList.add('hidden');
+                document.getElementById('game-setup').classList.remove('hidden');
+                game.chess = null;
+                game.board.destroy(); // Ważne: czyści instancję planszy
+            },
+
+            updateStatus: () => {
+                let status = '';
+                if(game.chess.in_checkmate()) status = 'SZACH MAT!';
+                else if(game.chess.in_draw()) status = 'REMIS!';
+                else if(game.chess.in_check()) status = 'SZACH!';
+                document.getElementById('game-status').innerText = status;
+            },
+
+            endGame: (winner) => {
+                let r, msg;
+                if(winner==='white') { r='1-0'; msg=`Wygrywa ${game.wPlayer}!`; }
+                else if(winner==='black') { r='0-1'; msg=`Wygrywa ${game.bPlayer}!`; }
+                else { r='0.5-0.5'; msg='Remis!'; }
+                
+                if(confirm(`Zakończyć grę: ${msg}`)) {
+                    DB.addMatch(game.wPlayer, game.bPlayer, r);
+                    game.resetUI();
+                    app.showTab('ranking');
+                }
+            }
+        };
+
+        app.init();
+    </script>
+</body>
+</html>
