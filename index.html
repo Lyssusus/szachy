@@ -164,6 +164,14 @@
                                 </select>
                             </div>
                         </div>
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Limit czasu</label>
+                            <div class="flex gap-2">
+                                <button onclick="gameMode.setTimeLimit(5)" class="flex-1 py-2 rounded bg-blue-100 border-2 border-blue-300 font-bold hover:bg-blue-200" id="time-5">5 min</button>
+                                <button onclick="gameMode.setTimeLimit(10)" class="flex-1 py-2 rounded bg-teal-600 text-white border-2 border-teal-600 font-bold hover:bg-teal-700" id="time-10">10 min</button>
+                                <button onclick="gameMode.setTimeLimit(15)" class="flex-1 py-2 rounded bg-blue-100 border-2 border-blue-300 font-bold hover:bg-blue-200" id="time-15">15 min</button>
+                            </div>
+                        </div>
                         <button onclick="game.start()" class="w-full bg-teal-600 text-white p-3 rounded font-bold hover:bg-teal-700 shadow-lg transform transition active:scale-95">Rozpocznij Mecz</button>
                     </div>
 
@@ -201,9 +209,15 @@
                 <!-- Plansza -->
                 <div id="game-active" class="hidden">
                     <div class="flex justify-between items-center mb-4 text-sm">
-                        <span class="font-bold text-gray-700" id="game-white-name"></span>
+                        <div class="text-center">
+                            <span class="font-bold text-gray-700" id="game-white-name"></span>
+                            <div class="text-lg font-bold" id="timer-white" style="color: #059669; font-family: monospace;">10:00</div>
+                        </div>
                         <span id="game-status" class="text-xs font-bold text-red-500"></span>
-                        <span class="font-bold text-gray-700" id="game-black-name"></span>
+                        <div class="text-center">
+                            <span class="font-bold text-gray-700" id="game-black-name"></span>
+                            <div class="text-lg font-bold" id="timer-black" style="color: #059669; font-family: monospace;">10:00</div>
+                        </div>
                     </div>
                     
                     <div class="chessboard" id="chessboard"></div>
@@ -340,6 +354,28 @@
         const gameMode = {
             mode: 'official',
             pieceColor: 'white',
+            timeLimit: 10,
+            
+            setTimeLimit: (mins) => {
+                gameMode.timeLimit = mins;
+                document.getElementById('time-5').classList.toggle('bg-teal-600', mins === 5);
+                document.getElementById('time-5').classList.toggle('text-white', mins === 5);
+                document.getElementById('time-5').classList.toggle('border-teal-600', mins === 5);
+                document.getElementById('time-5').classList.toggle('bg-blue-100', mins !== 5);
+                document.getElementById('time-5').classList.toggle('border-blue-300', mins !== 5);
+                
+                document.getElementById('time-10').classList.toggle('bg-teal-600', mins === 10);
+                document.getElementById('time-10').classList.toggle('text-white', mins === 10);
+                document.getElementById('time-10').classList.toggle('border-teal-600', mins === 10);
+                document.getElementById('time-10').classList.toggle('bg-blue-100', mins !== 10);
+                document.getElementById('time-10').classList.toggle('border-blue-300', mins !== 10);
+                
+                document.getElementById('time-15').classList.toggle('bg-teal-600', mins === 15);
+                document.getElementById('time-15').classList.toggle('text-white', mins === 15);
+                document.getElementById('time-15').classList.toggle('border-teal-600', mins === 15);
+                document.getElementById('time-15').classList.toggle('bg-blue-100', mins !== 15);
+                document.getElementById('time-15').classList.toggle('border-blue-300', mins !== 15);
+            },
             
             setMode: (m) => {
                 gameMode.mode = m;
@@ -440,6 +476,9 @@
             isTraining: false,
             selectedSquare: null,
             validMoves: [],
+            timerInterval: null,
+            whiteTimeMs: 600000,
+            blackTimeMs: 600000,
 
             start: () => {
                 const w = document.getElementById('white-player').value;
@@ -456,7 +495,11 @@
 
                 game.chess = new Chess();
                 game.isTraining = false;
+                const timeLimitMs = gameMode.timeLimit * 60 * 1000;
+                game.whiteTimeMs = timeLimitMs;
+                game.blackTimeMs = timeLimitMs;
                 game.renderBoard();
+                game.startTimer();
             },
 
             startTraining: () => {
@@ -516,6 +559,9 @@
             selectSquare: (sq) => {
                 if(game.isTraining && gameMode.pieceColor === 'black' && game.chess.turn() === 'w') return;
                 if(game.isTraining && gameMode.pieceColor === 'white' && game.chess.turn() === 'b') return;
+                // Blokada wybioru dla gracza, który nie jest u tury
+                const currentPlayer = game.chess.turn() === 'w' ? game.wPlayer : game.bPlayer;
+                if(!game.isTraining && currentPlayer !== app.currentUser) return;
                 
                 document.querySelectorAll('.square').forEach(s => s.classList.remove('selected', 'highlight'));
                 
@@ -547,6 +593,12 @@
                     e.preventDefault();
                     return;
                 }
+                // Blokada ruchu dla gracza, który nie jest u tury
+                const currentPlayer = game.chess.turn() === 'w' ? game.wPlayer : game.bPlayer;
+                if(!game.isTraining && currentPlayer !== app.currentUser) {
+                    e.preventDefault();
+                    return;
+                }
                 e.dataTransfer.effectAllowed = 'move';
                 e.dataTransfer.setData('from', e.target.dataset.square);
             },
@@ -566,6 +618,14 @@
             makeMove: (from, to) => {
                 const move = game.chess.move({ from, to, promotion: 'q' });
                 if(!move) return;
+                
+                // Sprawdzenie czy gracz wykonujący ruch to gracz, któremu należy tura
+                const currentPlayer = game.chess.turn() === 'w' ? game.bPlayer : game.wPlayer;
+                if(!game.isTraining && currentPlayer !== app.currentUser) {
+                    alert(`To nie Twoja tura! Czeka na ruch: ${currentPlayer}`);
+                    game.chess.undo();
+                    return;
+                }
                 
                 game.renderBoard();
                 game.updateStatus();
@@ -593,6 +653,47 @@
                 document.getElementById('game-active').classList.add('hidden');
                 document.getElementById('game-setup').classList.remove('hidden');
                 game.chess = null;
+                if(game.timerInterval) clearInterval(game.timerInterval);
+            },
+            
+            startTimer: () => {
+                if(game.timerInterval) clearInterval(game.timerInterval);
+                game.timerInterval = setInterval(() => {
+                    if(game.chess.turn() === 'w') {
+                        game.whiteTimeMs -= 100;
+                        if(game.whiteTimeMs <= 0) {
+                            game.whiteTimeMs = 0;
+                            clearInterval(game.timerInterval);
+                            game.endGame('black');
+                            return;
+                        }
+                    } else {
+                        game.blackTimeMs -= 100;
+                        if(game.blackTimeMs <= 0) {
+                            game.blackTimeMs = 0;
+                            clearInterval(game.timerInterval);
+                            game.endGame('white');
+                            return;
+                        }
+                    }
+                    game.updateTimerDisplay();
+                }, 100);
+            },
+            
+            updateTimerDisplay: () => {
+                const formatTime = (ms) => {
+                    const mins = Math.floor(ms / 60000);
+                    const secs = Math.floor((ms % 60000) / 1000);
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                };
+                document.getElementById('timer-white').textContent = formatTime(game.whiteTimeMs);
+                document.getElementById('timer-black').textContent = formatTime(game.blackTimeMs);
+                
+                // Podświetl grę jeśli czas poniżej 1 minuty
+                const timerWhite = document.getElementById('timer-white');
+                const timerBlack = document.getElementById('timer-black');
+                timerWhite.style.color = game.whiteTimeMs < 60000 ? '#dc2626' : '#059669';
+                timerBlack.style.color = game.blackTimeMs < 60000 ? '#dc2626' : '#059669';
             },
 
             updateStatus: () => {
@@ -604,9 +705,12 @@
             },
 
             endGame: (winner) => {
+                if(game.timerInterval) clearInterval(game.timerInterval);
+                
                 let r, msg;
-                if(winner==='white') { r='1-0'; msg=`Wygrywa ${game.wPlayer}!`; }
-                else if(winner==='black') { r='0-1'; msg=`Wygrywa ${game.bPlayer}!`; }
+                if(winner==='white') { r='1-0'; msg=`Wygrywa ${game.wPlayer}! (${game.bPlayer} przekroczył czas)`; }
+                else if(winner==='black') { r='0-1'; msg=`Wygrywa ${game.bPlayer}! (${game.wPlayer} przekroczył czas)`; }
+                else if(winner==='draw') { r='0.5-0.5'; msg='Remis!'; }
                 else { r='0.5-0.5'; msg='Remis!'; }
                 
                 if(confirm(`Zakończyć grę: ${msg}`)) {
