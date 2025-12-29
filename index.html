@@ -170,6 +170,7 @@
                                 <button onclick="gameMode.setTimeLimit(5)" class="flex-1 py-2 rounded bg-blue-100 border-2 border-blue-300 font-bold hover:bg-blue-200" id="time-5">5 min</button>
                                 <button onclick="gameMode.setTimeLimit(10)" class="flex-1 py-2 rounded bg-teal-600 text-white border-2 border-teal-600 font-bold hover:bg-teal-700" id="time-10">10 min</button>
                                 <button onclick="gameMode.setTimeLimit(15)" class="flex-1 py-2 rounded bg-blue-100 border-2 border-blue-300 font-bold hover:bg-blue-200" id="time-15">15 min</button>
+                                <button onclick="gameMode.setTimeLimit(0)" class="flex-1 py-2 rounded bg-purple-100 border-2 border-purple-300 font-bold hover:bg-purple-200" id="time-unlimited">∞</button>
                             </div>
                         </div>
                         <button onclick="game.start()" class="w-full bg-teal-600 text-white p-3 rounded font-bold hover:bg-teal-700 shadow-lg transform transition active:scale-95">Rozpocznij Mecz</button>
@@ -375,6 +376,12 @@
                 document.getElementById('time-15').classList.toggle('border-teal-600', mins === 15);
                 document.getElementById('time-15').classList.toggle('bg-blue-100', mins !== 15);
                 document.getElementById('time-15').classList.toggle('border-blue-300', mins !== 15);
+
+                document.getElementById('time-unlimited').classList.toggle('bg-teal-600', mins === 0);
+                document.getElementById('time-unlimited').classList.toggle('text-white', mins === 0);
+                document.getElementById('time-unlimited').classList.toggle('border-teal-600', mins === 0);
+                document.getElementById('time-unlimited').classList.toggle('bg-purple-100', mins !== 0);
+                document.getElementById('time-unlimited').classList.toggle('border-purple-300', mins !== 0);
             },
             
             setMode: (m) => {
@@ -495,7 +502,7 @@
 
                 game.chess = new Chess();
                 game.isTraining = false;
-                const timeLimitMs = gameMode.timeLimit * 60 * 1000;
+                const timeLimitMs = gameMode.timeLimit === 0 ? Infinity : gameMode.timeLimit * 60 * 1000;
                 game.whiteTimeMs = timeLimitMs;
                 game.blackTimeMs = timeLimitMs;
                 game.renderBoard();
@@ -559,9 +566,14 @@
             selectSquare: (sq) => {
                 if(game.isTraining && gameMode.pieceColor === 'black' && game.chess.turn() === 'w') return;
                 if(game.isTraining && gameMode.pieceColor === 'white' && game.chess.turn() === 'b') return;
-                // Blokada wybioru dla gracza, który nie jest u tury
                 const currentPlayer = game.chess.turn() === 'w' ? game.wPlayer : game.bPlayer;
                 if(!game.isTraining && currentPlayer !== app.currentUser) return;
+                
+                // Jeśli pole już zaznaczone, spróbuj wykonać ruch
+                if(game.selectedSquare && game.validMoves.find(m => m.to === sq)) {
+                    game.makeMove(game.selectedSquare, sq);
+                    return;
+                }
                 
                 document.querySelectorAll('.square').forEach(s => s.classList.remove('selected', 'highlight'));
                 
@@ -658,6 +670,7 @@
             
             startTimer: () => {
                 if(game.timerInterval) clearInterval(game.timerInterval);
+                if(gameMode.timeLimit === 0) return; // Bez limitu czasu
                 game.timerInterval = setInterval(() => {
                     if(game.chess.turn() === 'w') {
                         game.whiteTimeMs -= 100;
@@ -682,6 +695,7 @@
             
             updateTimerDisplay: () => {
                 const formatTime = (ms) => {
+                    if(ms === Infinity) return '∞';
                     const mins = Math.floor(ms / 60000);
                     const secs = Math.floor((ms % 60000) / 1000);
                     return `${mins}:${secs.toString().padStart(2, '0')}`;
