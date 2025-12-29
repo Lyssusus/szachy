@@ -481,7 +481,6 @@
             renderBoard: () => {
                 const board = document.getElementById('chessboard');
                 board.innerHTML = '';
-                const fen = game.chess.fen();
                 const pieces = game.chess.board();
                 
                 for(let r = 0; r < 8; r++) {
@@ -495,7 +494,8 @@
                         if(piece) {
                             const pieceEl = document.createElement('div');
                             pieceEl.className = 'piece';
-                            pieceEl.textContent = PIECES[piece.color + piece.type];
+                            const key = piece.color + piece.type.toUpperCase();
+                            pieceEl.textContent = PIECES[key];
                             pieceEl.draggable = true;
                             pieceEl.dataset.square = square.id.substr(3);
                             
