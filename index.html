@@ -13,17 +13,21 @@
         .btn-nav.active { border-bottom: 2px solid #0d9488; color: #0d9488; font-weight: bold; }
         
         /* SZACHOWNICA */
-        .chessboard {
+.chessboard {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: 0;
-    width: min(90vw, 65vh, 450px);
-    height: min(90vw, 65vh, 450px);
+    /* To jest kluczowe dla iPhone 13 mini: */
+    width: 100%;
+    /* Max szerokość dla desktopu: */
+    max-width: 420px;
+    /* Wymuszamy kwadrat: */
+    aspect-ratio: 1;
+    
     margin: 0 auto;
     border: 3px solid #333;
     background: #999;
     box-sizing: border-box;
-    padding: 0;
 }
         
         .square {
