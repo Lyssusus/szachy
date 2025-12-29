@@ -4,45 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Liga Szachowa Szwagrów</title>
-    <link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-    <style>
-        .wK { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1" transform="translate(0,0)"><path d="M21.5.5c-1 0-2 1-2 2v2c0 .5-.5 1-1 1h-2c-.5 0-1 .5-1 1v1h1V8h-1v2h4v-2h-1V6h1c.5 0 1-.5 1-1V3c0-1 1-2 2-2h1c1 0 2 1 2 2v2c0 .5.5 1 1 1h2v2h-2v1h1v1h1c.5 0 1-.5 1-1V5c0-.5-.5-1-1-1h-2c-.5 0-1-.5-1-1V2.5c0-1-1-2-2-2zm2 7c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm10 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm-14 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zM11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:none;fill:%23fff;fill-opacity:1"/><path d="M11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:%23000;stroke-width:.5;fill:none"/></g></svg>') no-repeat center; background-size: contain; }
-        .wQ { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 26c3-1 5-3 5-3l.5-14.5h3V9h4v-.5h4V9h3L31 23s2 2 5 3v2h-5v5h-8v-5H9zm9-5.5c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5zm8 0c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: contain; }
-        .wR { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 39h27v2H9zm3-3h21v2H12zm5-20h11v10H17zm-4-5h3V9h15v2h3v2H9z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: contain; }
-        .wB { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 36c3 0 7 1 13 1s10-1 13-1V9c0 .5.5 1 1.5 1H31V7.5c0-1 .5-1.5 1.5-1.5h4c1 0 1.5.5 1.5 1.5V9h4.5c1 0 1.5-.5 1.5-1s-1-1-1.5-1H37c.5-1 .5-2-1-2h-4c-1 0-2 1-2 2.5V7c-6 1-10 2-13 2-3 0-7-1-13-2v.5c0-1.5-1-2.5-2-2.5h-4c-1.5 0-1.5 1-1 2H9V7c-.5 0-1.5.5-1.5 1s.5 1 1.5 1h4.5V9H11c1 0 1.5-.5 1.5-1V36z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: contain; }
-        .wN { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 10-14 0-2.5-2.5-4-4.5-3.5-1 .5-1 1.5-1 2.5s.5 4.5 1 6c.5 1 0 2-1 2-1 0-3-1-3-2s.5-4 1-6C10 15 0 18 0 18c0-7 5.5-10 22-10z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: contain; }
-        .wP { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><path style="stroke:%23000;stroke-width:1.5;fill:%23fff" d="M22 9c-2.6 0-5 2.4-5 5 0 2.7 2.4 5 5 5s5-2.3 5-5c0-2.6-2.4-5-5-5zm5 13c-1 0-2 .9-2 2v10h4v-10c0-1.1-1-2-2-2z"/></svg>') no-repeat center; background-size: contain; }
-        .bK { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M21.5.5c-1 0-2 1-2 2v2c0 .5-.5 1-1 1h-2c-.5 0-1 .5-1 1v1h1V8h-1v2h4v-2h-1V6h1c.5 0 1-.5 1-1V3c0-1 1-2 2-2h1c1 0 2 1 2 2v2c0 .5.5 1 1 1h2v2h-2v1h1v1h1c.5 0 1-.5 1-1V5c0-.5-.5-1-1-1h-2c-.5 0-1-.5-1-1V2.5c0-1-1-2-2-2zm2 7c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm10 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm-14 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zM11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:none;fill:%23000;fill-opacity:1"/><path d="M11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:%23fff;stroke-width:.5;fill:none"/></g></svg>') no-repeat center; background-size: contain; }
-        .bQ { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 26c3-1 5-3 5-3l.5-14.5h3V9h4v-.5h4V9h3L31 23s2 2 5 3v2h-5v5h-8v-5H9zm9-5.5c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5zm8 0c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: contain; }
-        .bR { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 39h27v2H9zm3-3h21v2H12zm5-20h11v10H17zm-4-5h3V9h15v2h3v2H9z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: contain; }
-        .bB { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 36c3 0 7 1 13 1s10-1 13-1V9c0 .5.5 1 1.5 1H31V7.5c0-1 .5-1.5 1.5-1.5h4c1 0 1.5.5 1.5 1.5V9h4.5c1 0 1.5-.5 1.5-1s-1-1-1.5-1H37c.5-1 .5-2-1-2h-4c-1 0-2 1-2 2.5V7c-6 1-10 2-13 2-3 0-7-1-13-2v.5c0-1.5-1-2.5-2-2.5h-4c-1.5 0-1.5 1-1 2H9V7c-.5 0-1.5.5-1.5 1s.5 1 1.5 1h4.5V9H11c1 0 1.5-.5 1.5-1V36z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: contain; }
-        .bN { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 10-14 0-2.5-2.5-4-4.5-3.5-1 .5-1 1.5-1 2.5s.5 4.5 1 6c.5 1 0 2-1 2-1 0-3-1-3-2s.5-4 1-6C10 15 0 18 0 18c0-7 5.5-10 22-10z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: contain; }
-        .bP { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><path style="stroke:%23fff;stroke-width:1.5;fill:%23000" d="M22 9c-2.6 0-5 2.4-5 5 0 2.7 2.4 5 5 5s5-2.3 5-5c0-2.6-2.4-5-5-5zm5 13c-1 0-2 .9-2 2v10h4v-10c0-1.1-1-2-2-2z"/></svg>') no-repeat center; background-size: contain; }
-        .square-55d63 { width: 50px; height: 50px; }
-    </style>
-
-    <link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-    <style>
-        .wK { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1" transform="translate(0,0)"><path d="M21.5.5c-1 0-2 1-2 2v2c0 .5-.5 1-1 1h-2c-.5 0-1 .5-1 1v1h1V8h-1v2h4v-2h-1V6h1c.5 0 1-.5 1-1V3c0-1 1-2 2-2h1c1 0 2 1 2 2v2c0 .5.5 1 1 1h2v2h-2v1h1v1h1c.5 0 1-.5 1-1V5c0-.5-.5-1-1-1h-2c-.5 0-1-.5-1-1V2.5c0-1-1-2-2-2zm2 7c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm10 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm-14 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zM11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:none;fill:%23fff;fill-opacity:1"/><path d="M11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:%23000;stroke-width:.5;fill:none"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .wQ { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 26c3-1 5-3 5-3l.5-14.5h3V9h4v-.5h4V9h3L31 23s2 2 5 3v2h-5v5h-8v-5H9zm9-5.5c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5zm8 0c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .wR { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 39h27v2H9zm3-3h21v2H12zm5-20h11v10H17zm-4-5h3V9h15v2h3v2H9z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .wB { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 36c3 0 7 1 13 1s10-1 13-1V9c0 .5.5 1 1.5 1H31V7.5c0-1 .5-1.5 1.5-1.5h4c1 0 1.5.5 1.5 1.5V9h4.5c1 0 1.5-.5 1.5-1s-1-1-1.5-1H37c.5-1 .5-2-1-2h-4c-1 0-2 1-2 2.5V7c-6 1-10 2-13 2-3 0-7-1-13-2v.5c0-1.5-1-2.5-2-2.5h-4c-1.5 0-1.5 1-1 2H9V7c-.5 0-1.5.5-1.5 1s.5 1 1.5 1h4.5V9H11c1 0 1.5-.5 1.5-1V36z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .wN { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 10-14 0-2.5-2.5-4-4.5-3.5-1 .5-1 1.5-1 2.5s.5 4.5 1 6c.5 1 0 2-1 2-1 0-3-1-3-2s.5-4 1-6C10 15 0 18 0 18c0-7 5.5-10 22-10z" style="stroke:%23000;stroke-width:1.5;fill:%23fff"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .wP { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><path style="stroke:%23000;stroke-width:1.5;fill:%23fff" d="M22 9c-2.6 0-5 2.4-5 5 0 2.7 2.4 5 5 5s5-2.3 5-5c0-2.6-2.4-5-5-5zm5 13c-1 0-2 .9-2 2v10h4v-10c0-1.1-1-2-2-2z"/></svg>') no-repeat center; background-size: 100% 100%; }
-        .bK { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M21.5.5c-1 0-2 1-2 2v2c0 .5-.5 1-1 1h-2c-.5 0-1 .5-1 1v1h1V8h-1v2h4v-2h-1V6h1c.5 0 1-.5 1-1V3c0-1 1-2 2-2h1c1 0 2 1 2 2v2c0 .5.5 1 1 1h2v2h-2v1h1v1h1c.5 0 1-.5 1-1V5c0-.5-.5-1-1-1h-2c-.5 0-1-.5-1-1V2.5c0-1-1-2-2-2zm2 7c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm10 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zm-14 0c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2zM11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:none;fill:%23000;fill-opacity:1"/><path d="M11 17h23v2H11zm1 4h21v15H12zm19 2h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3zm-5 0h-3v11h3z" style="stroke:%23fff;stroke-width:.5;fill:none"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .bQ { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 26c3-1 5-3 5-3l.5-14.5h3V9h4v-.5h4V9h3L31 23s2 2 5 3v2h-5v5h-8v-5H9zm9-5.5c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5zm8 0c-1.5 0-2.5-1-2.5-2.5s1-2.5 2.5-2.5 2.5 1 2.5 2.5-1 2.5-2.5 2.5z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .bR { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 39h27v2H9zm3-3h21v2H12zm5-20h11v10H17zm-4-5h3V9h15v2h3v2H9z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .bB { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M9 36c3 0 7 1 13 1s10-1 13-1V9c0 .5.5 1 1.5 1H31V7.5c0-1 .5-1.5 1.5-1.5h4c1 0 1.5.5 1.5 1.5V9h4.5c1 0 1.5-.5 1.5-1s-1-1-1.5-1H37c.5-1 .5-2-1-2h-4c-1 0-2 1-2 2.5V7c-6 1-10 2-13 2-3 0-7-1-13-2v.5c0-1.5-1-2.5-2-2.5h-4c-1.5 0-1.5 1-1 2H9V7c-.5 0-1.5.5-1.5 1s.5 1 1.5 1h4.5V9H11c1 0 1.5-.5 1.5-1V36z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .bN { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><g style="opacity:1"><path d="M22 10c10.5 1 16.5 8 16 29H15c0-9 10-6.5 10-14 0-2.5-2.5-4-4.5-3.5-1 .5-1 1.5-1 2.5s.5 4.5 1 6c.5 1 0 2-1 2-1 0-3-1-3-2s.5-4 1-6C10 15 0 18 0 18c0-7 5.5-10 22-10z" style="stroke:%23fff;stroke-width:1.5;fill:%23000"/></g></svg>') no-repeat center; background-size: 100% 100%; }
-        .bP { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 45"><path style="stroke:%23fff;stroke-width:1.5;fill:%23000" d="M22 9c-2.6 0-5 2.4-5 5 0 2.7 2.4 5 5 5s5-2.3 5-5c0-2.6-2.4-5-5-5zm5 13c-1 0-2 .9-2 2v10h4v-10c0-1.1-1-2-2-2z"/></svg>') no-repeat center; background-size: 100% 100%; }
-        .square-55d63 { width: 50px; height: 50px; }
-    </style>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background-color: #f3f4f6; font-family: sans-serif; }
@@ -50,14 +12,56 @@
         .tab-content.active { display: block; }
         .btn-nav.active { border-bottom: 2px solid #0d9488; color: #0d9488; font-weight: bold; }
         
-        /* Naprawa wyświetlania figur */
-        #myBoard {
-            max-width: 100%;
-            height: auto;
+        /* SZACHOWNICA */
+        .chessboard {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 0;
+            max-width: 500px;
+            width: 100%;
+            aspect-ratio: 1;
+            margin: 0 auto;
+            border: 3px solid #333;
+            background: #999;
         }
         
-        .chessboard {
-            border: 2px solid #999;
+        .square {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: grab;
+            user-select: none;
+            position: relative;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+        
+        .square.light {
+            background-color: #f0d9b5;
+        }
+        
+        .square.dark {
+            background-color: #b58863;
+        }
+        
+        .square.selected {
+            background-color: #baca44 !important;
+            box-shadow: inset 0 0 0 2px #7d8000;
+        }
+        
+        .square.highlight {
+            background-color: #7d8000 !important;
+        }
+        
+        .piece {
+            cursor: grab;
+            draggable: true;
+        }
+        
+        .piece:active {
+            cursor: grabbing;
         }
     </style>
 </head>
@@ -196,13 +200,13 @@
 
                 <!-- Plansza -->
                 <div id="game-active" class="hidden">
-                    <div class="flex justify-between items-center mb-2 text-sm">
+                    <div class="flex justify-between items-center mb-4 text-sm">
                         <span class="font-bold text-gray-700" id="game-white-name"></span>
                         <span id="game-status" class="text-xs font-bold text-red-500"></span>
                         <span class="font-bold text-gray-700" id="game-black-name"></span>
                     </div>
                     
-                    <div id="myBoard" style="width: 100%; max-width: 500px; margin: 0 auto;"></div>
+                    <div class="chessboard" id="chessboard"></div>
 
                     <!-- Przyciski sterowania grą -->
                     <div class="flex gap-2 mb-4 mt-4">
@@ -228,6 +232,12 @@
     </div>
 
     <script>
+        // UNICODY FIGUR SZACHOWYCH
+        const PIECES = {
+            'wK': '♔', 'wQ': '♕', 'wR': '♖', 'wB': '♗', 'wN': '♘', 'wP': '♙',
+            'bK': '♚', 'bQ': '♛', 'bR': '♜', 'bB': '♝', 'bN': '♞', 'bP': '♟'
+        };
+
         // --- BAZA DANYCH ---
         const DB = {
             players: [
@@ -405,7 +415,7 @@
                         const move = cpu.getRandomMove(game.chess);
                         if(move) {
                             game.chess.move(move);
-                            game.board.position(game.chess.fen());
+                            game.renderBoard();
                             game.updateStatus();
                         }
                     }, 800);
@@ -414,7 +424,7 @@
                         const move = cpu.getRandomMove(game.chess);
                         if(move) {
                             game.chess.move(move);
-                            game.board.position(game.chess.fen());
+                            game.renderBoard();
                             game.updateStatus();
                         }
                     }, 800);
@@ -425,10 +435,11 @@
         // --- GRA ---
         const game = {
             chess: null,
-            board: null,
             wPlayer: null,
             bPlayer: null,
             isTraining: false,
+            selectedSquare: null,
+            validMoves: [],
 
             start: () => {
                 const w = document.getElementById('white-player').value;
@@ -445,22 +456,7 @@
 
                 game.chess = new Chess();
                 game.isTraining = false;
-                game.board = Chessboard('myBoard', {
-                    draggable: true,
-                    position: 'start',
-                    onDragStart: (source, piece) => {
-                        if (game.chess.game_over()) return false;
-                        if ((game.chess.turn() === 'w' && piece.search(/^b/) !== -1) ||
-                            (game.chess.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
-                    },
-                    onDrop: (source, target) => {
-                        const move = game.chess.move({ from: source, to: target, promotion: 'q' });
-                        if (move === null) return 'snapback';
-                        game.updateStatus();
-                    },
-                    onSnapEnd: () => game.board.position(game.chess.fen())
-                });
-                setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
+                game.renderBoard();
             },
 
             startTraining: () => {
@@ -475,26 +471,110 @@
                 document.getElementById('game-black-name').innerText = '⚫ ' + game.bPlayer;
 
                 game.chess = new Chess();
-                game.board = Chessboard('myBoard', {
-                    draggable: true,
-                    position: 'start',
-                    onDragStart: (source, piece) => {
-                        if (game.chess.game_over()) return false;
-                        if ((gameMode.pieceColor === 'white' && game.chess.turn() !== 'w') ||
-                            (gameMode.pieceColor === 'black' && game.chess.turn() !== 'b')) return false;
-                        if ((game.chess.turn() === 'w' && piece.search(/^b/) !== -1) ||
-                            (game.chess.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
-                    },
-                    onDrop: (source, target) => {
-                        const move = game.chess.move({ from: source, to: target, promotion: 'q' });
-                        if (move === null) return 'snapback';
-                        game.updateStatus();
-                        cpu.makeMove();
-                    },
-                    onSnapEnd: () => game.board.position(game.chess.fen())
+                game.renderBoard();
+                
+                if(gameMode.pieceColor === 'black') {
+                    setTimeout(() => cpu.makeMove(), 500);
+                }
+            },
+
+            renderBoard: () => {
+                const board = document.getElementById('chessboard');
+                board.innerHTML = '';
+                const fen = game.chess.fen();
+                const pieces = game.chess.board();
+                
+                for(let r = 0; r < 8; r++) {
+                    for(let c = 0; c < 8; c++) {
+                        const isLight = (r + c) % 2 === 0;
+                        const square = document.createElement('div');
+                        square.className = `square ${isLight ? 'light' : 'dark'}`;
+                        square.id = `sq-${String.fromCharCode(97+c)}${8-r}`;
+                        
+                        const piece = pieces[r][c];
+                        if(piece) {
+                            const pieceEl = document.createElement('div');
+                            pieceEl.className = 'piece';
+                            pieceEl.textContent = PIECES[piece.color + piece.type];
+                            pieceEl.draggable = true;
+                            pieceEl.dataset.square = square.id.substr(3);
+                            
+                            pieceEl.addEventListener('dragstart', game.onDragStart);
+                            pieceEl.addEventListener('dragend', game.onDragEnd);
+                            square.appendChild(pieceEl);
+                        }
+                        
+                        square.addEventListener('dragover', (e) => e.preventDefault());
+                        square.addEventListener('drop', game.onDrop);
+                        square.addEventListener('click', () => game.selectSquare(square.id.substr(3)));
+                        
+                        board.appendChild(square);
+                    }
+                }
+            },
+
+            selectSquare: (sq) => {
+                if(game.isTraining && gameMode.pieceColor === 'black' && game.chess.turn() === 'w') return;
+                if(game.isTraining && gameMode.pieceColor === 'white' && game.chess.turn() === 'b') return;
+                
+                document.querySelectorAll('.square').forEach(s => s.classList.remove('selected', 'highlight'));
+                
+                if(game.selectedSquare === sq) {
+                    game.selectedSquare = null;
+                    game.validMoves = [];
+                    return;
+                }
+                
+                const moves = game.chess.moves({ square: sq, verbose: true });
+                if(moves.length === 0) return;
+                
+                game.selectedSquare = sq;
+                document.getElementById('sq-' + sq).classList.add('selected');
+                
+                moves.forEach(m => {
+                    document.getElementById('sq-' + m.to).classList.add('highlight');
                 });
-                setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
-                if(gameMode.pieceColor === 'black') cpu.makeMove();
+                
+                game.validMoves = moves;
+            },
+
+            onDragStart: (e) => {
+                if(game.isTraining && gameMode.pieceColor === 'black' && game.chess.turn() === 'w') {
+                    e.preventDefault();
+                    return;
+                }
+                if(game.isTraining && gameMode.pieceColor === 'white' && game.chess.turn() === 'b') {
+                    e.preventDefault();
+                    return;
+                }
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('from', e.target.dataset.square);
+            },
+
+            onDragEnd: (e) => {
+                document.querySelectorAll('.square').forEach(s => s.classList.remove('selected', 'highlight'));
+                game.selectedSquare = null;
+            },
+
+            onDrop: (e) => {
+                e.preventDefault();
+                const from = e.dataTransfer.getData('from');
+                const to = e.target.closest('.square').id.substr(3);
+                game.makeMove(from, to);
+            },
+
+            makeMove: (from, to) => {
+                const move = game.chess.move({ from, to, promotion: 'q' });
+                if(!move) return;
+                
+                game.renderBoard();
+                game.updateStatus();
+                game.selectedSquare = null;
+                game.validMoves = [];
+                
+                if(game.isTraining) {
+                    setTimeout(() => cpu.makeMove(), 500);
+                }
             },
 
             cancel: () => {
@@ -505,7 +585,7 @@
             
             undo: () => {
                 game.chess.undo();
-                game.board.position(game.chess.fen());
+                game.renderBoard();
                 game.updateStatus();
             },
 
@@ -513,7 +593,6 @@
                 document.getElementById('game-active').classList.add('hidden');
                 document.getElementById('game-setup').classList.remove('hidden');
                 game.chess = null;
-                game.board.destroy();
             },
 
             updateStatus: () => {
