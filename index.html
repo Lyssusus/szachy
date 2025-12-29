@@ -88,25 +88,65 @@
                 <!-- Setup -->
                 <div id="game-setup">
                     <h3 class="text-lg font-bold mb-4">Nowy Mecz</h3>
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase">Białe</label>
-                            <select id="white-player" class="mt-1 block w-full p-2 border rounded">
-                                <option value="Maciek">Maciek</option>
-                                <option value="Rafał">Rafał</option>
-                                <option value="Marcin">Marcin</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 uppercase">Czarne</label>
-                            <select id="black-player" class="mt-1 block w-full p-2 border rounded">
-                                <option value="Rafał">Rafał</option>
-                                <option value="Maciek">Maciek</option>
-                                <option value="Marcin">Marcin</option>
-                            </select>
-                        </div>
+                    
+                    <!-- Wybór typu gry -->
+                    <div class="mb-6 flex gap-2">
+                        <button onclick="gameMode.setMode('official')" class="flex-1 py-2 rounded bg-teal-600 text-white font-bold hover:bg-teal-700" id="mode-official">Mecz oficjalny</button>
+                        <button onclick="gameMode.setMode('training')" class="flex-1 py-2 rounded border-2 border-teal-600 text-teal-600 font-bold hover:bg-teal-50" id="mode-training">Trening z CPU</button>
                     </div>
-                    <button onclick="game.start()" class="w-full bg-teal-600 text-white p-3 rounded font-bold hover:bg-teal-700 shadow-lg transform transition active:scale-95">START</button>
+
+                    <!-- Setup meczy oficjalnych -->
+                    <div id="official-setup" class="block">
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase">Białe</label>
+                                <select id="white-player" class="mt-1 block w-full p-2 border rounded">
+                                    <option value="Maciek">Maciek</option>
+                                    <option value="Rafał">Rafał</option>
+                                    <option value="Marcin">Marcin</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-500 uppercase">Czarne</label>
+                                <select id="black-player" class="mt-1 block w-full p-2 border rounded">
+                                    <option value="Rafał">Rafał</option>
+                                    <option value="Maciek">Maciek</option>
+                                    <option value="Marcin">Marcin</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="game.start()" class="w-full bg-teal-600 text-white p-3 rounded font-bold hover:bg-teal-700 shadow-lg transform transition active:scale-95">Rozpocznij Mecz</button>
+                    </div>
+
+                    <!-- Setup treningu z CPU -->
+                    <div id="training-setup" class="hidden">
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Gracz</label>
+                            <select id="training-player" class="mt-1 block w-full p-2 border rounded">
+                                <option value="Maciek">Maciek</option>
+                                <option value="Rafał">Rafał</option>
+                                <option value="Marcin">Marcin</option>
+                            </select>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-xs font-bold text-gray-500 uppercase">Grasz jako:</label>
+                            <div class="flex gap-2">
+                                <button onclick="gameMode.setPieceColor('white')" class="flex-1 py-2 rounded bg-white border-2 border-gray-400 font-bold hover:border-gray-600" id="color-white">Białe ♔</button>
+                                <button onclick="gameMode.setPieceColor('black')" class="flex-1 py-2 rounded bg-gray-800 text-white border-2 border-gray-800 font-bold hover:bg-gray-900" id="color-black">Czarne ♚</button>
+                            </div>
+                        </div>
+                        <button onclick="game.startTraining()" class="w-full bg-blue-600 text-white p-3 rounded font-bold hover:bg-blue-700 shadow-lg transform transition active:scale-95">Rozpocznij Trening</button>
+                    </div>
+                </div>
+
+                <!-- Terminarz meczów -->
+                <div id="schedule-section" class="mt-8 pt-8 border-t">
+                    <h3 class="text-lg font-bold mb-4">📅 Terminarz Meczów</h3>
+                    <div class="mb-4 flex gap-2">
+                        <input type="date" id="match-date" class="flex-1 p-2 border rounded">
+                        <button onclick="schedule.addMatch()" class="bg-teal-600 text-white px-4 py-2 rounded font-bold hover:bg-teal-700">Zaplanuj</button>
+                    </div>
+                    <div id="schedule-list" class="space-y-2"></div>
                 </div>
 
                 <!-- Plansza -->
@@ -241,12 +281,109 @@
             }
         };
 
+        // --- GAME MODE ---
+        const gameMode = {
+            mode: 'official',
+            pieceColor: 'white',
+            
+            setMode: (m) => {
+                gameMode.mode = m;
+                document.getElementById('official-setup').classList.toggle('hidden', m !== 'official');
+                document.getElementById('training-setup').classList.toggle('hidden', m !== 'training');
+                document.getElementById('mode-official').classList.toggle('bg-teal-600', m === 'official');
+                document.getElementById('mode-official').classList.toggle('border-2', m !== 'official');
+                document.getElementById('mode-official').classList.toggle('border-teal-600', m !== 'official');
+                document.getElementById('mode-official').classList.toggle('text-teal-600', m !== 'official');
+                document.getElementById('mode-training').classList.toggle('bg-blue-600', m === 'training');
+                document.getElementById('mode-training').classList.toggle('text-white', m === 'training');
+                document.getElementById('mode-training').classList.toggle('border-blue-600', m === 'training');
+            },
+
+            setPieceColor: (color) => {
+                gameMode.pieceColor = color;
+                document.getElementById('color-white').classList.toggle('bg-blue-100', color === 'white');
+                document.getElementById('color-black').classList.toggle('bg-blue-100', color === 'black');
+            }
+        };
+
+        // --- SCHEDULE ---
+        const schedule = {
+            getSchedule: () => JSON.parse(localStorage.getItem('chessSchedule')) || [],
+            saveSchedule: (s) => localStorage.setItem('chessSchedule', JSON.stringify(s)),
+            
+            addMatch: () => {
+                const date = document.getElementById('match-date').value;
+                if(!date) return alert('Wybierz datę!');
+                const sched = schedule.getSchedule();
+                sched.push({ date, completed: false });
+                schedule.saveSchedule(sched);
+                schedule.render();
+            },
+
+            render: () => {
+                const list = document.getElementById('schedule-list');
+                const sched = schedule.getSchedule();
+                list.innerHTML = '';
+                if(sched.length === 0) {
+                    list.innerHTML = '<p class="text-gray-400 text-sm">Brak zaplanowanych meczów</p>';
+                    return;
+                }
+                sched.sort((a,b) => new Date(a.date) - new Date(b.date)).forEach((m, idx) => {
+                    const d = new Date(m.date).toLocaleDateString('pl-PL');
+                    list.innerHTML += `<div class="bg-white border rounded p-3 flex justify-between items-center text-sm">
+                        <span>${d}</span>
+                        <button onclick="schedule.removeMatch(${idx})" class="text-red-500 text-xs hover:text-red-700">✕</button>
+                    </div>`;
+                });
+            },
+
+            removeMatch: (idx) => {
+                const sched = schedule.getSchedule();
+                sched.splice(idx, 1);
+                schedule.saveSchedule(sched);
+                schedule.render();
+            }
+        };
+
+        // --- CHESS AI (CPU) ---
+        const cpu = {
+            getRandomMove: (chessGame) => {
+                const moves = chessGame.moves({ verbose: true });
+                if(moves.length === 0) return null;
+                return moves[Math.floor(Math.random() * moves.length)];
+            },
+
+            makeMove: () => {
+                if(game.chess.game_over()) return;
+                if(game.chess.turn() === 'w' && gameMode.pieceColor === 'black') {
+                    setTimeout(() => {
+                        const move = cpu.getRandomMove(game.chess);
+                        if(move) {
+                            game.chess.move(move);
+                            game.board.position(game.chess.fen());
+                            game.updateStatus();
+                        }
+                    }, 800);
+                } else if(game.chess.turn() === 'b' && gameMode.pieceColor === 'white') {
+                    setTimeout(() => {
+                        const move = cpu.getRandomMove(game.chess);
+                        if(move) {
+                            game.chess.move(move);
+                            game.board.position(game.chess.fen());
+                            game.updateStatus();
+                        }
+                    }, 800);
+                }
+            }
+        };
+
         // --- GRA ---
         const game = {
             chess: null,
             board: null,
             wPlayer: null,
             bPlayer: null,
+            isTraining: false,
 
             start: () => {
                 const w = document.getElementById('white-player').value;
@@ -262,6 +399,7 @@
                 document.getElementById('game-black-name').innerText = '⚫ ' + b;
 
                 game.chess = new Chess();
+                game.isTraining = false;
                 game.board = Chessboard('myBoard', {
                     draggable: true,
                     position: 'start',
@@ -277,8 +415,41 @@
                     },
                     onSnapEnd: () => game.board.position(game.chess.fen())
                 });
-                // Fix for responsive board
                 setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
+            },
+
+            startTraining: () => {
+                const player = document.getElementById('training-player').value;
+                game.wPlayer = gameMode.pieceColor === 'white' ? player : 'CPU';
+                game.bPlayer = gameMode.pieceColor === 'black' ? player : 'CPU';
+                game.isTraining = true;
+                
+                document.getElementById('game-setup').classList.add('hidden');
+                document.getElementById('game-active').classList.remove('hidden');
+                document.getElementById('game-white-name').innerText = '⚪ ' + game.wPlayer;
+                document.getElementById('game-black-name').innerText = '⚫ ' + game.bPlayer;
+
+                game.chess = new Chess();
+                game.board = Chessboard('myBoard', {
+                    draggable: true,
+                    position: 'start',
+                    onDragStart: (source, piece) => {
+                        if (game.chess.game_over()) return false;
+                        if ((gameMode.pieceColor === 'white' && game.chess.turn() !== 'w') ||
+                            (gameMode.pieceColor === 'black' && game.chess.turn() !== 'b')) return false;
+                        if ((game.chess.turn() === 'w' && piece.search(/^b/) !== -1) ||
+                            (game.chess.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
+                    },
+                    onDrop: (source, target) => {
+                        const move = game.chess.move({ from: source, to: target, promotion: 'q' });
+                        if (move === null) return 'snapback';
+                        game.updateStatus();
+                        cpu.makeMove();
+                    },
+                    onSnapEnd: () => game.board.position(game.chess.fen())
+                });
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 200);
+                if(gameMode.pieceColor === 'black') cpu.makeMove();
             },
 
             cancel: () => {
@@ -315,7 +486,9 @@
                 else { r='0.5-0.5'; msg='Remis!'; }
                 
                 if(confirm(`Zakończyć grę: ${msg}`)) {
-                    DB.addMatch(game.wPlayer, game.bPlayer, r);
+                    if(!game.isTraining) {
+                        DB.addMatch(game.wPlayer, game.bPlayer, r);
+                    }
                     game.resetUI();
                     app.showTab('ranking');
                 }
@@ -323,6 +496,7 @@
         };
 
         app.init();
+        schedule.render();
     </script>
 </body>
 </html>
